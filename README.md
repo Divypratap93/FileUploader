@@ -44,3 +44,47 @@ npx prisma migrate dev --name init
 npm start
 
 The server will run on http://localhost:3000
+
+API Endpoints
+
+📤 Upload File
+
+POST /upload
+
+Body: multipart/form-data
+
+Response:
+
+{ "success": true, "file": { /_ file details _/ } }
+
+📂 Get Files
+
+GET /files
+
+Response:
+
+[ { "id": 1, "filename": "example.png", "publicId": "abc123", "createdAt": "2025-01-01T12:00:00Z" } ]
+
+❌ Delete File
+
+DELETE /file/:publicId
+
+Response:
+
+{ "success": true, "deletedFile": { /_ file details _/ } }
+
+Frontend Usage
+
+To dynamically set an onclick event for deleting a file:
+
+document.querySelector(".delete-btn").setAttribute("onclick", `deleteFile('${publicId}', '${filename}')`);
+
+This will call the deleteFile function to remove a file from the database.
+
+📜 License
+
+MIT
+
+👨‍💻 Author
+
+Your Name (@your-username)
