@@ -1,0 +1,224 @@
+<aside class="sidebar">
+  <div class="sidebar-content">
+      <!-- Buttons to create new folder and upload new file -->
+      <button id="createFolderBtn" class="btn">Create New Folder</button>
+      <button id="uploadFileBtn" class="btn">Upload New File</button>
+
+      <!-- Separator line -->
+      <hr>
+
+      <!-- Folder Hierarchy -->
+<div class="folder-hierarchy">
+  <p><strong>Folder Hierarchy:</strong></p>
+  <ul>
+      <li class="folder-item root">Root</li>
+      <% if (folderHierarchy && folderHierarchy.length > 0) { %>
+          <ul class="folder-list">
+              <% folderHierarchy.forEach(folder => { %>
+                  <li class="folder-item <%= folder.selectedFolder ? 'selected' : '' %>">
+                      <a href="/dashboard/folders/<%= encodeURIComponent(folder.name) %>">
+                          <%= folder.name %>
+                      </a>
+                  </li>
+              <% }) %>
+          </ul>
+      <% } else { %>
+          <li>No folders available</li>
+      <% } %>
+  </ul>
+</div>
+
+  <!-- Modals -->
+  <!-- Create Folder Modal -->
+  <div id="createFolderModal" class="modal">
+      <div class="modal-content">
+          <span id="closeCreateFolderModal" class="close">&times;</span>
+          <h3>Create New Folder</h3>
+          <form action="/create-folder" method="POST">
+              <input type="text" name="folderName" placeholder="Folder Name" required />
+              <button type="submit" class="btn">Create Folder</button>
+          </form>
+      </div>
+  </div>
+
+  <!-- Upload File Modal -->
+  <div id="uploadFileModal" class="modal">
+      <div class="modal-content">
+          <span id="closeUploadFileModal" class="close">&times;</span>
+          <h3>Upload New File</h3>
+          <form action="/upload/<%= selectedFolder.name %>" method="POST" enctype="multipart/form-data">
+              <input type="file" name="file" accept="image/*,video/*,audio/*" required />
+              <button type="submit" class="btn">Upload File</button>
+          </form>
+      </div>
+  </div>
+</aside>
+
+<!-- Add some basic styles for modals and layout -->
+<style>
+  .sidebar {
+      width: 250px;
+      padding: 20px;
+      background: #f4f4f4;
+      border-right: 1px solid #ccc;
+  }
+
+  .sidebar-content {
+      display: flex;
+      flex-direction: column;
+  }
+
+  .btn {
+      padding: 10px;
+      margin-bottom: 10px;
+      background-color: #007BFF;
+      border-radius: 12px;
+      color: white;
+      border: none;
+      cursor: pointer;
+  }
+
+  .btn:hover {
+      background-color: #0056b3;
+  }
+
+  /* Folder Hierarchy Styling */
+.folder-hierarchy {
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.folder-hierarchy p {
+    font-size: 18px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.folder-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.folder-item {
+    padding: 8px 15px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.folder-item a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    width: 100%;
+    display: block;
+}
+
+/* Hover effect */
+.folder-item:hover {
+    background-color: #e0e0e0;
+}
+
+.folder-item.selected {
+    background-color: #007bff;
+    color: white;
+}
+ul{
+  padding-inline-start: 0px;
+}
+
+li{
+  list-style-type: none;
+}
+
+/* Root folder style */
+.folder-item.root {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    background-color: #f1f1f1;
+    cursor: default;
+}
+
+/* Folder item style */
+.folder-item a:hover {
+    color: #007bff;
+}
+
+.folder-item.selected a {
+    color: white;
+}
+
+.folder-item:not(.selected) a:hover {
+    color: #007bff;
+}
+
+
+  /* Modal styling */
+  .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.4);
+  }
+
+  .modal-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      width: 80%;
+      max-width: 400px;
+  }
+
+  .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+  }
+</style>
+
+<script>
+  // Modal open and close functionality
+  document.getElementById('createFolderBtn').onclick = function() {
+      document.getElementById('createFolderModal').style.display = 'block';
+  }
+
+  document.getElementById('uploadFileBtn').onclick = function() {
+      document.getElementById('uploadFileModal').style.display = 'block';
+  }
+
+  document.getElementById('closeCreateFolderModal').onclick = function() {
+      document.getElementById('createFolderModal').style.display = 'none';
+  }
+
+  document.getElementById('closeUploadFileModal').onclick = function() {
+      document.getElementById('uploadFileModal').style.display = 'none';
+  }
+
+  window.onclick = function(event) {
+      if (event.target == document.getElementById('createFolderModal')) {
+          document.getElementById('createFolderModal').style.display = 'none';
+      }
+      if (event.target == document.getElementById('uploadFileModal')) {
+          document.getElementById('uploadFileModal').style.display = 'none';
+      }
+  }
+</script>

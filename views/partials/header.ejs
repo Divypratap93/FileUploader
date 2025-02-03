@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <h1>File Uploader</h1>
+        </div>
+        <nav class="navbar">
+            <% if (!isLoggedIn) { %>
+                <a href="/login" class="nav-link">Login</a>
+                <a href="/signup" class="signup-btn">Sign Up</a>
+            <% } else { %>
+                <a href="/logout" class="logout-btn">Logout</a>
+            <% } %>
+        </nav>
+    </header>
+
+<style>
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #13327a;
+        color: white;
+        padding: 20px;
+    }
+
+    .logo h1 {
+        margin: 0;
+    }
+
+    .navbar {
+        display: flex;
+        gap: 20px;
+    }
+
+    .nav-link, .signup-btn, .logout-btn {
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        padding: 8px 15px;
+        border-radius: 4px;
+    }
+
+    .nav-link:hover, .signup-btn:hover, .logout-btn:hover {
+        background-color: #0056b3;
+    }
+
+    .logout-btn {
+        background-color: #f44336;
+    }
+
+    .logout-btn:hover {
+        background-color: #d32f2f;
+    }
+</style>
+</body>

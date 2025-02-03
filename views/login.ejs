@@ -1,0 +1,36 @@
+<%- include('partials/header') %>
+
+<h2>Login</h2>
+
+<form action="/login" method="POST">
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+
+    <button type="submit">Login</button>
+</form>
+
+<p>Don't have an account? <a href="/signup">Sign Up</a></p>
+
+<%- include('partials/footer') %>
+
+
+<style>
+
+input{
+    border-radius: 6px;
+    border-width: 1px;
+}
+
+button {
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+
+</style>

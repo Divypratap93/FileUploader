@@ -1,0 +1,296 @@
+<%- include('partials/header') %>
+
+
+<body>
+    <div class="main-container">
+        <%- include('partials/sidebar', { folderHierarchy: folderHierarchy }) %>
+        <div class="dashboard-container">
+            <h2>Welcome <%= userName %> 👋</h2>
+    
+            <!-- Display Folder Name -->
+            <% if (selectedFolder) { %>
+                <div class="folder-details">
+                    <h3>Folder: <%= selectedFolder.name %></h3>
+    
+                    <!-- Files in the selected folder -->
+                    <table class="file-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Size</th>
+                                <th>Created</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% files.forEach(file => { %>
+                                <tr class="file-item" onclick="openDrawer('<%= file.filename %>', '<%= file.size %>', '<%= file.createdAt %>', '<%= file.publicId %>', '<%= file.url %>')">
+                                    <td><%= file.filename %></td>
+                                    <td><%= file.size %> KB</td>
+                                    <td><%= new Date(file.createdAt).toLocaleDateString() %></td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } else { %>
+                <div class="no-folder-message">
+                    <p>No folder selected. Please choose a folder to view its files.</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+<!-- File Details Drawer -->
+<div id="fileDrawer" class="drawer">
+    <div class="drawer-content">
+        <span class="close-btn" onclick="closeDrawer()">&times;</span>
+        <h3>File Information</h3>
+        <p><strong>Name:</strong> <span id="drawerFilename"></span></p>
+        
+        <p><strong>Size:</strong> <span id="drawerFileSize"></span></p>
+        <p><strong>Created:</strong> <span id="drawerFileDate"></span></p>
+
+        <div class="drawer-actions">
+            <button onclick="closeDrawer()">Close</button>
+            <button onclick="shareFile()">Share</button>
+            <button class="delete-btn">Delete</button>
+            <a id="downloadFile" href="#" download>
+                <button class="download-btn">Download</button>
+            </a>
+        </div>
+    </div>
+</div>
+
+    
+
+
+
+<%- include('partials/footer') %>
+
+
+
+
+
+<style>
+    .main-container {
+        display: flex;
+         /* Offset to ensure it doesn't overlap with the sidebar */
+         height: 100%;
+    }
+
+    html,body{
+        
+        height: 100%;
+    }
+
+    .dashboard-container {
+        flex: 1;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        
+    }
+
+    .folder-details {
+        margin-top: 30px;
+    }
+
+    .file-list {
+        list-style-type: none;
+        padding-left: 0;
+    }
+
+    .file-item {
+        margin: 10px 0;
+    }
+
+    .file-item :hover{
+        background-color: #e5e4e4;
+        
+        cursor: pointer;
+    }
+
+    .file-item a {
+        color: #007BFF;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .file-item a:hover {
+        text-decoration: underline;
+    }
+
+    .no-folder-message {
+        padding: 10px;
+        background-color: #f8f8f8;
+        border-radius: 5px;
+        color: #333;
+    }
+
+
+    .file-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.file-table th, .file-table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.file-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.file-table td a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.file-table td a:hover {
+    text-decoration: underline;
+}
+
+.file-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.no-folder-message {
+    padding: 20px;
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    margin-top: 20px;
+}
+
+/* Drawer Styling */
+.drawer {
+    position: fixed;
+    right: -600px; /* Initially hidden */
+    top: 0;
+    width: 400px;
+    height: 100%;
+    background: #1a1a1a; /* Dark theme */
+    color: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+    transition: right 0.3s ease-in-out;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.drawer.open {
+    right: 0; /* Slide in */
+}
+
+input{
+    border-radius: 12px;
+}
+
+.drawer-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.drawer-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    gap: 12px;
+}
+
+button {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.download-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+}
+
+.download-btn:hover {
+    background: #0056b3;
+}
+
+
+
+</style>
+
+<script>
+
+function openDrawer(filename, size, createdAt, publicId, fileUrl) {
+    document.getElementById('drawerFilename').textContent = filename;
+    
+    document.getElementById('drawerFileSize').textContent = size + " KB";
+    document.getElementById('drawerFileDate').textContent = createdAt;
+
+      // Set Download URL
+    const downloadLink = document.getElementById("downloadFile");
+    downloadLink.href = fileUrl; 
+    downloadLink.setAttribute("download", filename);
+
+    // Set Delete Functionality
+    document.querySelector(".delete-btn").setAttribute("onclick", `deleteFile('${publicId}', '${filename}')`);
+    console.log("drawer open")
+    // Open drawer
+    document.getElementById('fileDrawer').classList.add('open');
+}
+
+function closeDrawer() {
+    document.getElementById('fileDrawer').classList.remove('open');
+}
+
+function shareFile() {
+    alert("Sharing functionality to be implemented!");
+}
+
+function deleteFile(publicId,filename) {
+    if (!confirm(`Are you sure you want to delete ${filename}?`)) return;
+
+    fetch('/upload/delete-file', {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ publicId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("File deleted successfully!");
+            location.reload(); // Refresh page or update UI
+        } else {
+            alert("Error: " + data.message);
+        }
+    })
+    .catch(error => console.error("Error:", error));
+}
+
+
+
+</script>
+
+
+
+</body>
